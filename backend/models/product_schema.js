@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
@@ -6,20 +5,9 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    description: {
-        type: String,
-        required: true
-    },
-    price: {
-        type: Number,
-        required: true
-    },
-    image: {
-        type: String,
-        required: true
-    },
-    stock: {
-        type: Number,
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
         required: true
     },
     brand: {
@@ -27,45 +15,45 @@ const productSchema = new mongoose.Schema({
         ref: 'Brand',
         required: true
     },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
+    price: {
+        type: Number,
         required: true
     },
-    ratings: {
+    discount: {
         type: Number,
-        min: 0,
-        max: 5
+        default: 0
+    },
+    attributes: {
+        type: Map,
+        of: String
     },
     reviews: [{
-        user: {
-            type: String,
-            required: true
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
         },
         rating: {
             type: Number,
             min: 0,
-            max: 5,
-            required: true
+            max: 5
         },
-        comment: {
-            type: String,
-            required: true
-        },
-        date: {
+        comment: String,
+        createdAt: {
             type: Date,
             default: Date.now
         }
     }],
-    discount: {
+    averageRating: {
         type: Number,
         min: 0,
-        max: 100
+        max: 5
     },
-    specifications: {
-        type: Map,
-        of: String
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 });
+
+productSchema.index({ discount: -1 });
 
 module.exports = mongoose.model('Product', productSchema);
